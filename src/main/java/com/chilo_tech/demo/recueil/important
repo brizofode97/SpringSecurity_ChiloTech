@@ -1,0 +1,27 @@
+//IMPORTANT: Spring Security
+Lorsqu'on ajoute la dépendance Spring Security dans un projet Spring Boot, on voit qu'il y'a une configuration par défaut qui impose
+un username par défaut "user" et un mot de passe généré. Pour s'en passer, on peut désactiver le "csrf" dans une chaine de filtre ou
+le desactive dans l'annotation "@SprintBootApplication" dans le "main" avec "@SpringBootApplication(exclude={SecurityAutoConfigure.class})".
+On crée un "Bean" de "BCryptPasswordEncoder" pour crypter nos mots de passe.
+
+
+//IMPORTANT: Utilisation de Docker
+
+
+//IMPORTANT: Pour l'envoie de mail
+Il peut simuler un serveur en local qui permet de simuler une boite mail.
+
+//IMPORTANT: Autres notions
+-Le "Jackson" est une bibliothèque Java couramment utilisée pour le traitement des données Json. Elle permet de convertir des objets Java
+en données Json(sérialisation) et de transformer des données Json en objet Java(désérialisation).
+-L'annotation "@JsonInclude(JsonInclude.Include.NON_NULL)" indique que seules les propriétés non nulles de l'objet seront incluses lors de
+la sérialisation en Json.
+-L'annotation "@JsonIgnoreProperties(ignoreUnknown = true)" permet d'ignorer les propriétés Json inconnues lors de la désérialisation. I.e.
+losrque le Json contient des champs qui ne sont pas dans la classe cibles, on les ignore.
+En Spring Boot, tous les sous packages du package principal sont scannés par défaut. Si on crée un package en dehors du package principe,
+on peut le scanner en précisant ceci "@ComponentScan(basePackages = {"com.example.demo", "com.autre.package"})" dans la classe pricipale.
+-Pour la génération d'un JWT, on a ajouté trois dépendances à savoir :
+ *jjwt-api : permet de mettre à disposition les interfaces à appeler;
+ *jjwt-imp : permet d'avoir les implémentations des interfaces;
+ *jjwt-jacson : permet le mappage JSON des objets.
+

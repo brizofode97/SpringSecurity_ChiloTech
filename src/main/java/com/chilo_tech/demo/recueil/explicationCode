@@ -1,0 +1,51 @@
+-L'annotation "@PrePersist" permet d'exécuter une logique avant que l'entité ne soit persistée dans la base de données.
+-Un Mapper est une classe qui convertit des objets d'un type à un autre vice versa(par exemple, d'une entité vers un dto ou inversément).
+-La méthode static "getMapper" de la classe "Mappers" est une méthode qui permet d'avoir une instance de l'interface "Mapper" déclarée.
+Voici le code "Mappers.getMapper(nomClass.class)", cette résutante sera un singleton.
+-Lorsque qu'on écrit du code qui doit générer une implémentation, par exemple une interface avec "MapStruct" dont l'implémentation
+doit etre générée, on doit ajouter les processors d'annotations comme celui de "MapStruct". Mais il faut faire attention pour celui de
+"MapStruct" car son processor d'annotation doivent prendre en compte des champs privées donc c'est pas n'importe lequel qui va marcher.
+-Les annotations "@RestControllerAdvice" et "@ExceptionHandler" permettent de mettre une gestion d'exception centralisée pour
+les applications Rest. L'annotation "@RestControllerAdvice" est une combinaison de "@ControllerAdvice" et "@ResponseBody" permet d'annoter
+des classes afin de globaliser les erreurs et permet de scanner les méthodes annotées "@ExceptionHandler".
+L'annotation "@ExceptionHandler" permet de spécifier qu'une méthode gère une ou plusieurs exception.
+-L'annotation "@Valid" permet de vérifier si l'objet respecte les annotations de ces champs. Si ce n'est pas le cas, il lève une exception
+"MethodArgumentNotValidException".
+-Liste de quelques annotations de validation : "@NotNull", "@Email", "@Size", ect.
+Maintenant si on met une annotation dans le controlleur comme "@Email" C'est l'annotation "ConstraintViolationException" au lieu de
+"MethodArgumentNotValidException".
+-Différence entre les deux dépendances "spring-boot-starter-validation" et "jakarta.validation-api" :
+L’ajout de spring-boot-starter-validation active la validation dans Spring Boot avec Hibernate Validator, tandis que jakarta.validation-api
+seule ne suffirait pas car elle n’inclut pas de moteur pour exécuter les validations.
+La dépendance "jakarta.validation-api" fournit uniquement les interfaces de l'API de validation, comme @NotNull, @Size, @Email, etc., sans fournir
+d'implémentation de ces validations. Donc "spring-boot-starter-validation" = "jakarta.validation-api" + Hibernate Validator.
+-"Random random = new Random()" est une instance de la classe Random C'est une classe utilitaire qui permet de générer des valleurs
+en java.
+-"int randonInteger = random.nextInt(999999)" permet de générer une valeur entre 0(inclu) et le bound 99999(exlu).
+-"String code = String.format("%0d", randomInteger)" permet de transformer "randomInteger" en chaine de caracteres.
+ *"%" Signale le début d'une spécification de format
+ *"0" Précise que les zéros doivent être ajoutés pour remplir la largeur.
+ *"6" La largeur minimum, fixée ici à 6 caractères.
+ *"d" Indique que la valeur est un entier (decimal integer).
+-On peut avoir des soucis, si on met en meme temps les annotations "@NoArgConstructor" et "@RequiredArgConstructor" avec des paramètres
+finaux. Pour palier à ce problème, on peut des valeurs par défaut aux champs finaux ou bien forcer l'annotation
+"@NoArgConstructor(force=true)".
+-Un Jwt est une chaine de caractère constituant trois parties séparées par des points :
+1ième partie : elle est constituée de l'algorithme de chiffrement et le type de données en entrée.
+2ième partie : elle posséde les claims(revendication); i.e. les informations de l'utilisateur qu'on veut remontées.
+3ièm partie : elle possède la clé de chiffrement pour la signature.
+-"extends" vs "implements":
+Ces deux mots clés permettent de créer des relations entre les classes, entre les interfaces et entre classe et interface.
+Pour le mot clé "extends", cela permet de faire de l'héritage entre deux classes, entre une classe et une classe abstraite, entre des
+interfaces. Pour les classes, on ne peut pas avoir d'héritage multiple mais on peut l'avoir pour les interfaces.
+Le mot clé "implements" est utilisé pour permettre à une classe d'implémenter une ou plusieurs interfaces. Ceci permet de résoudre
+l'héritage multiple pour les classes.
+Pour l'héritage, la classe peut ou pas redéfinir les méthodes de la classe parent. Par contre, pour l'implémentation d'interface,
+la classe doit définir toutes les méthodes de l'interface.
+-Les annotation "@NotNull" et "@NonNull" :
+L'annotation "@NotNull" vient du package "javax.validation.constraints" ou "jakarta.validation.constraints", il permet de s'assurer que
+l'élément annoté n'est pas null lors de l'envoie des données comme l'envoie de requete. Il se fait à l'exécution via un validateur pour
+la validation des DTOs ou entités et lève l'exception "ConstraintViolationException". Alors l'annotation "@NonNull" vient du package
+"Lombok",  il permet de s'assurer que l'élément annoté n'est pas null lors de la compilation et Évite les erreurs "NullPointerException" à
+l'exécution (si bien utilisé).
+
