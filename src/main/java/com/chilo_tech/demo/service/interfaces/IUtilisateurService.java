@@ -14,6 +14,6 @@ public interface IUtilisateurService {
     Response<UtilisateurResponseDTO> inscription(UtilisateurRequestDTO utilisateurRequestDTO);
     Response<Null> supprimerTousLesUtilisateurs();
     Response<UtilisateurResponseDTO> ActiverUtilisateur(String email, String code);
-    Response<Map<String, String>> authentification(AuthentificationDTO authentificationDTO, AuthenticationManager authenticationManager);
+    Response<Map<String, String>> authentification(AuthentificationDTO authentificationDTO) throws Exception;
 
 }

@@ -31,6 +31,7 @@ public interface IAvisMapper {
             @Mapping(source="avis.identifiant", target="identifiant"),
             @Mapping(source="avis.message", target="message"),
             @Mapping(source="avis.status", target="status"),
+            @Mapping(source="avis.utilisateur", target="utilisateurResponseDTO"),
 
     })
     AvisResponseDTO MapperAvisToAvisResponseDTO(Avis avis);

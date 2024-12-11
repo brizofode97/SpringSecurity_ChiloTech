@@ -24,4 +24,39 @@ on peut le scanner en précisant ceci "@ComponentScan(basePackages = {"com.examp
  *jjwt-api : permet de mettre à disposition les interfaces à appeler;
  *jjwt-imp : permet d'avoir les implémentations des interfaces;
  *jjwt-jacson : permet le mappage JSON des objets.
+//NOTE: Les exceptions lévées lors de l'utilisation de l'interface "AuthenticationManager"
+Lorsqu'on essaie d'authentifier un utilisateur avec l'interface "AuthenticationManager", on peut rencontrer certaines exceptions :
+-BadCredentialsException : levée lorsque les informations d'authentification(email ou mot de passe) sont incorrects. Il va avec le code
+status "401 UnAuthorized" pour indiquer que l'utilisateur n'est pas authorisé à accéder à la plateforme car les identifiants sont invalides.
+-DisabledException : levée lorsque l'utilisateur a été désactivé dans le système. Son code status est "403 Forbidden" pour indiquer que
+l'utilisateur est connu, mais il n'est pas autorisé à accéder car son compte est désactivé.
+-LockedException : levé lorsque le compte de l'utilisateur est vérouillé, généralement après plusieurs tentatives d'authentification
+échouées. Son code status est "423 Locked" indique que la ressource, dans ce cas le compte de l'utilisateur, est vérouillée.
+-AccountExpiredException : levée lorsque le compte de l'utilisateur a expiré. Cela peut etre du à une politique d'expiration de
+l'application. Son code de status peut etre de deux types :
+  *"403 Forbidden" si l'utilisateur ne peut plus se connecter car son compte a expiré;
+  *"401 Unauthorized" si l'utilisateur se reconnecte après renouvellement.
+-CredentialsExpiredException : levé lorsque les identifiants d'un utilisateur sont expirés. Par exemple, si l'utilisateur doit changer son
+mot de passe après une certaine période. Son code status est "401 Unauthorized" pour indiquer que l'utilisateur doit mettre à jour ces
+informations d'identification.
+
+//Que permet la définition d'une valeur dans le fichier "properties" ?
+//NOTE: Le JWT
+On voit souvent que les JWTs sont signés. La signature d'un JWT permet de garentir:
+-Authenticité: Permet de s'assurer que le JWT a été bien émis par une source de confiance;
+-Intégrité: Permet de vérifier que le contenu du jwt(header et payload) n'a pas été altéré après sa création.
+La signature est créée avec une clé sécrète dans le cas de HMAC ou une paire clé privée/publique dans le cas de RSA ou ECDSA.
+La clé doit etre sécrète pour éviter qu'un tier malveillant puisse falsifier le JWT. Pour l'algorithme "HMAC"(HS256 ou HS512),
+la meme clé sécrète est utilisée pour signer et vérifier le JWT.
+L'authentiication JWT consiste à examiner chaque requete entrante avec un JWT sur le header. Ce qui permet de vérifier si le Jwt est vaide
+et non expiré; si c'est ok pour, il authentifie l'utilisateur en recupérant les informations dans la base de données et configure le
+contexte de sécurité en enregistrant un objet Authentication. Au cas ou le Jwt est invalide ou non expiré, la requete passe mais une
+logique supplémentaire, hors de ce code, peut boquer l'accés aux ressources protégées.
+
+
+
+
+
+
+
 

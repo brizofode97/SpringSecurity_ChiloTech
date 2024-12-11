@@ -10,7 +10,9 @@ public record AvisResponseDTO(
         @NotNull @NotBlank
         String message,
         @NotNull @NotBlank
-        String status
+        String status,
+        @NotNull
+        UtilisateurResponseDTO utilisateurResponseDTO
 
 ) {
 }

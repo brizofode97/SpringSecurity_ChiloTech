@@ -18,14 +18,15 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -34,6 +35,7 @@ import java.util.Optional;
 public class UtilisateurServiceImpl implements IUtilisateurService {
 
     private final BCryptPasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
     private final JwtConfig jwtConfig;
     private final UtilisateurRepository utilisateurRepository;
@@ -47,7 +49,7 @@ public class UtilisateurServiceImpl implements IUtilisateurService {
         Optional<Role> roleOptional = roleRepository.findByCode(isCodeRole ? KProfit.CODE_UTILISATEUR : utilisateurRequestDTO.codeRole());
         if(roleOptional.isEmpty()) {
             return Response
-                    .badRequest(null,"Le role de 'utilisateur n'est pas précisé", "/inscription");
+                    .badRequest("Le role de 'utilisateur n'est pas précisé", "/inscription");
         }
         Role roleObligatoire = roleOptional.get();
         String mdpCrypte = passwordEncoder.encode(utilisateurRequestDTO.mdp());
@@ -84,10 +86,10 @@ public class UtilisateurServiceImpl implements IUtilisateurService {
         );
 
         if(validation == null){
-            return  Response.notFound(null, "Utilisateur n'existe pas");
+            return  Response.notFound("Utilisateur n'existe pas", "/activerUtilisateur");
         }
         if(Instant.now().isAfter(validation.getDateExpiration())){
-            return Response.gone(null, "Code d'activation expiré");
+            return Response.gone("Code d'activation expiré", "/activationUtilisateur");
         }
         Utilisateur utilisateur = validation.getUtilisateur();
         utilisateur.setActif(true);
@@ -100,14 +102,22 @@ public class UtilisateurServiceImpl implements IUtilisateurService {
         return Response.ok(utilisateurResponseDTOActif, "L'utilisateur est maintenant activé");
     }
 
-    @Override
-    public Response<Map<String, String>> authentification(AuthentificationDTO authentificationDTO, AuthenticationManager authenticationManager) {
-        Map<String, String> mapJwt;
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authentificationDTO.username(), authentificationDTO.password())
-        );
-        mapJwt = jwtConfig.generate(authentificationDTO.username());
-        return Response.ok(mapJwt, "Votre token de connexion est maintenant disponible");
-    }
 
+    @Override
+    public Response<Map<String, String>> authentification(AuthentificationDTO authentificationDTO) throws Exception {
+        Map<String, String> mapJwt;
+
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authentificationDTO.username(), authentificationDTO.password())
+            );
+
+            if(authentication == null | !Objects.requireNonNull(authentication).isAuthenticated()){
+                return Response.notFound("Email ou mot de passe incorrect", "/authentification");
+            }
+            log.info("la valeur de authentication : {}", authentication);
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+            mapJwt = jwtConfig.generateJwt(authentication);
+            return Response.ok(mapJwt, "Votre token de connexion est maintenant disponible");
+    }
 }
+

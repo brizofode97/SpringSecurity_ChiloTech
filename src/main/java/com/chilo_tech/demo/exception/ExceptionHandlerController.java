@@ -5,6 +5,7 @@ import com.chilo_tech.demo.web.dto.response.UtilisateurResponseDTO;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.*;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class ExceptionHandlerController {
     @ResponseStatus(HttpStatus.CONFLICT)
     public Response<Object> handleDuplicateAttribute(DataIntegrityViolationException ex, WebRequest webRequest){
         return Response
-                .duplicate(null, ex.getMessage(), webRequest.getDescription(false));
+                .duplicate(ex.getMessage(), webRequest.getDescription(false));
     }
 
     //OPTIMIZE: Gestion des exceptions sur les champs des DTOs ne respectants pas les annotations spécifiées sur eux
@@ -51,7 +52,42 @@ public class ExceptionHandlerController {
             messageDesErreurs.append(key).append(": ").append(errors.get(key)).append("\n");
         }
 
-        return  Response.badRequest(null, messageDesErreurs.toString(), webRequest.getDescription(false));
+        return  Response.badRequest(messageDesErreurs.toString(), webRequest.getDescription(false));
+    }
+
+    //OPTIMIZE: Gestion de l'exception pour les identifiants incorrects
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Response<Object> handlerBadCredentials(BadCredentialsException ex, WebRequest webRequest){
+        return Response.unauthorized(ex.getMessage(), webRequest.getDescription(false));
+    }
+
+    //OPTIMIZE: Gestion de l'exception pour les utilisateurs désactivés
+    @ExceptionHandler(DisabledException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Response<Object> handlerDisabled(DisabledException ex, WebRequest webRequest){
+        return Response.forbidden(ex.getMessage(), webRequest.getDescription(false));
+    }
+
+    //OPTIMIZE: Gestion de l'exception pour les utilisateurs verrouillés
+    @ExceptionHandler(LockedException.class)
+    @ResponseStatus(HttpStatus.LOCKED)
+    public Response<Object> handlerLocked(LockedException ex, WebRequest webRequest){
+        return Response.locked(ex.getMessage(), webRequest.getDescription(false));
+    }
+
+    //OPTIMIZE: Gestion de l'exception pour les comptes utilisateurs expirés
+    @ExceptionHandler(AccountExpiredException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Response<Object> handlerAccountExpired(LockedException ex, WebRequest webRequest){
+        return Response.forbidden(ex.getMessage(), webRequest.getDescription(false));
+    }
+
+    //OPTIMIZE: Gestion de l'exception pour les identifiants utilisateurs expirés
+    @ExceptionHandler(CredentialsExpiredException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Response<Object> handlerCredentialsExpired(LockedException ex, WebRequest webRequest){
+        return Response.unauthorized(ex.getMessage(), webRequest.getDescription(false));
     }
 
 }

@@ -5,6 +5,7 @@ import com.chilo_tech.demo.service.interfaces.IUtilisateurService;
 import com.chilo_tech.demo.web.dto.request.AuthentificationDTO;
 import com.chilo_tech.demo.web.dto.request.UtilisateurRequestDTO;
 import com.chilo_tech.demo.web.dto.response.UtilisateurResponseDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Null;
@@ -24,7 +25,6 @@ import java.util.Map;
 public class UtilisateurController {
 
     private final IUtilisateurService iUtilisateurService;
-    private final AuthenticationManager authenticationManager;
 
     @PostMapping(path = "inscription")
     public Response<UtilisateurResponseDTO> inscription(@RequestBody @Valid UtilisateurRequestDTO utilisateurRequestDTO){
@@ -44,8 +44,11 @@ public class UtilisateurController {
     }
 
     @PostMapping(path = "connexion")
-    public Response<Map<String, String>> authentification(@RequestBody @Valid AuthentificationDTO authentificationDTO){
-        return iUtilisateurService.authentification(authentificationDTO, authenticationManager);
+    public Response<Map<String, String>> authentification(
+//            @RequestHeader(value = "Authorization", required = false) String authorization,
+            @RequestBody @Valid AuthentificationDTO authentificationDTO) throws Exception {
+
+        return iUtilisateurService.authentification(authentificationDTO);
     }
 
 }

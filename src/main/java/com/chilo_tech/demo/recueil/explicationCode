@@ -49,3 +49,48 @@ la validation des DTOs ou entités et lève l'exception "ConstraintViolationExce
 "Lombok",  il permet de s'assurer que l'élément annoté n'est pas null lors de la compilation et Évite les erreurs "NullPointerException" à
 l'exécution (si bien utilisé).
 
+//NOTE: Explication sur l'authentification
+-"AuthenticationManager" est le composant central "Spring Security" pour l'authentiication. Il prend à partir
+de sa méthode "authenticate" un objet "Authentication" (combinaison de nom et mot de passe) et essaie de l'authentifier en délégant cette
+tache à un ou plusieurs "AuthenticationProvider".
+-"AuthenticationConfiguration" est un composant de Spring qui configure et expose une instance "AuthenticationManager" grace à sa méthode
+"getAuthenticationManager()".
+-"AuthenticationProvider" est le composant qui effectue la vérification réelle des informations d'authentification (nom utilisateur,
+mot de passe).
+-"DaoAuthenticationProvider" est une implémentation courante de "AuthenticationProvider" qui utilise un "UserDetailsService" pour charger
+les informations de l'utilisateur depuis une source de données(par exemple, base de données). La méthode
+"setUserDetailsService(userDetailsService)" configure le "UserDetailsService", qui est responsable de la récupération des infromations de
+l'utilisateur(nom, mot de passe, role). La méthode "setPasswordEncoder(passwordEncoder())" configure l'encodeur du mot de passe pour
+vérifier si le mot de passe fourni correspond au mot de passe enregistré.
+Maintenant après tout ces interagissements, si l'authentification est valide, le "AuthenticationManager" retourne un instance
+"Authentication"; si c'est invalide, une exception de type "BadCredentialsException" est levée.
+REMARQUE: Ceci nous permet de dire que :
+"AuthenticationManager" Coordonne le processus global d'authentification tandis que "AuthenticationProvider" effectue l'authentification
+réelle en vérifiant les informations d'identification d'un utilisateur particulier. Cela permet une séparation claire des responsabilités
+et rend le système flexible en permettant de configurer plusieurs AuthenticationProvider si nécessaire.
+-"Authentication" est une interface centrale de Spring Security représentant une requete d'authentification ou une authentification
+réussie. Elle possède ces méthodes principales :
+*getPrincipal() : retourne l'identité de l'utilisateur (nom utilisateur ou un objet userDetails);
+*getCredentials() : retourne les informations d'identification(mot de passe);
+*isAuthenticated() : indique si l'utilisateur est authentifié.
+Spring Security utilise différentes implémentations de l'interface "Authentication" en fonction du type d'authentification.
+"UsernamePasswordAuthenticationToken" est une implémentation concréte de l'interface "Authentication" pour les authentifications bassée
+sur le nom utilisateur et mot de passe. Son constructeur "new UsernamePasswordAuthenticationToken(username, password);" est utilisé pour
+encapsuler les informations de l'utilisateur avant de les vérifier. Lorsqu'on transporte les informations avec l'objet
+"UsernamePasswordAuthenticationToken" de "Authentication", on a les information nom d'utilisateur et mot de passe. Si l'athentification a
+réussi, on a une instance "UsernamePasswordAuthenticationToken" de "Authentication" avec les informations données utilisateur et les rôles
+de l'utilisateur.
+
+//NOTE: Explication sur le JWT
+-L'utilitaire "Decoders.BASE64" est utilisé pour décoder une chaine encodée en base64.
+-"Keys.hmacShaKeyFor()" prend en entré un tableau de byte et fourni une clé sécret utilisable pour des opérations cryptographiques.
+-La classe abstraite "OncePerRequestFilter" permet d'implémenter des filtres personnalisés et qui ne seront traversés par la requete
+qu'une seule fois. I.e. une requete qui est vérifiée sur ce filtre, meme s'il y'a une redirection, le passage sur plusieurs autres
+filtres ou autres la requete ne va pas etre vérifiée encore par ce filtre.
+-L'écriture "Claims::getExpiration" est une référence de méthode en Java introduit en Java. Il permet de remplacer les méthodes lamda comme
+"claims -> claims.getExpiration()" et d'utiliser des méthodes ou des constructeurs comme fonctions.
+On a différente manière pour appliquer une référence méthode:
+-"ClassName::methodName": pour les méthodes statiques ou d'instance;
+-"objet::methodName": si on a une instance spécifique de la classe;
+-"ClassName::new": pour un constructeur.
+

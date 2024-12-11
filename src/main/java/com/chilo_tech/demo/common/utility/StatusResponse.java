@@ -9,6 +9,7 @@ public enum StatusResponse {
     FORBIDDEN,
     DUPLICATE,
     GONE,
+    LOCKED,
     INTERNAL_SERVER_ERROR,
 
 }

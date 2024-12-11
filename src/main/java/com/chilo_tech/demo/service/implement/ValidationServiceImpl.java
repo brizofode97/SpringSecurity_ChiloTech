@@ -22,6 +22,7 @@ public class ValidationServiceImpl implements IValidationService {
     private final NotificationService notificationService;
 
     @Override
+//    @Transaction
     public Response<Validation> enregistrerValidation(Utilisateur utilisateur) {
 
         Instant dateCreation = Instant.now();
@@ -33,7 +34,7 @@ public class ValidationServiceImpl implements IValidationService {
 
         Validation validation = new Validation(dateCreation, dateExpiration, codeValidation, utilisateur);
         Validation validationSave = validationRepository.save(validation);
-        notificationService.notification(validationSave);
+        notificationService.notificationApresEnregistrement(validationSave);
 
         return Response
                 .ok(validationSave, "pour l'enregistrement de la validation");

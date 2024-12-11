@@ -12,7 +12,7 @@ public class NotificationService {
 
     private final JavaMailSender javaMailSender;
 
-    public void notification(Validation validation){
+    public void notificationApresEnregistrement(Validation validation){
 
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setFrom("no-reply@defoTech.com");
