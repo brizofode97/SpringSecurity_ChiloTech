@@ -30,15 +30,21 @@ public class SpringSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
                 {
-                    auth.requestMatchers(HttpMethod.POST, "/inscription").permitAll();
-                    auth.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll();
-                    auth.requestMatchers("/suppression/tous-les-utilisateurs").permitAll();
-                    auth.requestMatchers("/suppression/tous-les-utilisateurs").permitAll();
-                    auth.requestMatchers("/avis/suppression-tous-avis").permitAll();
-                    auth.requestMatchers("/avis/creation").permitAll();
-                    auth.requestMatchers("/activer-utilisateur").permitAll();
-                    auth.requestMatchers("/connexion").permitAll();
-                    auth.anyRequest().authenticated();
+                    auth
+                            .requestMatchers(HttpMethod.POST, "/inscription").permitAll()
+                            .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                            .requestMatchers("/suppression/tous-les-utilisateurs").permitAll()
+                            .requestMatchers("/suppression/tous-les-utilisateurs").permitAll()
+                            .requestMatchers("/avis/suppression-tous-avis").permitAll()
+                            .requestMatchers("/avis/creation").permitAll()
+                            .requestMatchers("/activer-utilisateur").permitAll()
+                            .requestMatchers("/connexion").permitAll()
+                            .requestMatchers("role/creation").permitAll()
+                            .requestMatchers("/fichier/creation").permitAll()
+                            .requestMatchers("/fichier/byte_fichier/*").permitAll()
+                            .requestMatchers("signature/signature_QRCode/*").permitAll()
+                            .anyRequest().authenticated();
+
                 })
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> {
                     httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -48,7 +54,7 @@ public class SpringSecurityConfig {
     }
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder(){
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -58,7 +64,7 @@ public class SpringSecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService){
+    public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService) {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(this.passwordEncoder());

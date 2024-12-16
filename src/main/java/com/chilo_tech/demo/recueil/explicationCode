@@ -93,4 +93,8 @@ On a différente manière pour appliquer une référence méthode:
 -"ClassName::methodName": pour les méthodes statiques ou d'instance;
 -"objet::methodName": si on a une instance spécifique de la classe;
 -"ClassName::new": pour un constructeur.
+ Le "CascadeType.DETACH" permet de dire que lorsqu'on supprime l'entité actuelle, on ne supprime pas l'entité présente à l'intérieur.
+ Le "CascadeType.MERGE" permet de dire avant de créer l'entité pésente, il faut d'abord créer l'entité à l'intérieur.
+
+La différence entre "Multipart" et "MultipartFile" ???
 
