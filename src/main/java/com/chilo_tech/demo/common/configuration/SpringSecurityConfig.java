@@ -43,6 +43,7 @@ public class SpringSecurityConfig {
                             .requestMatchers("/fichier/creation").permitAll()
                             .requestMatchers("/fichier/byte_fichier/*").permitAll()
                             .requestMatchers("signature/signature_QRCode/*").permitAll()
+                            .requestMatchers("signature/signature_Specimen/*").permitAll()
                             .anyRequest().authenticated();
 
                 })

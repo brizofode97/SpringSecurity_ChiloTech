@@ -25,7 +25,7 @@ public class SignatureController {
     @PostMapping(path = "/signature_QRCode/{idSigner}")
     @Operation(summary = "Signer un fichier PDF",
             description = "Permet de signer un document PDF en envoyant le fichier sous forme de tableau de bytes.")
-    public Response<byte[]> SignatureParQrCode(
+    public Response<String> SignatureParQrCode(
             @RequestParam("codePin") String codePin,
             @RequestBody String fileReceivefile,
             @PathVariable("idSigner") int idSigner,
@@ -34,6 +34,18 @@ public class SignatureController {
             @RequestParam(value = "Y", defaultValue = "330", required = false) int positionY
     ) throws WriterException, IOException {
         return iSignatureService.signatureParQrCode(codePin, Decoders.BASE64.decode(fileReceivefile), idSigner, workerId, positionX, positionY);
+    }
+
+    @PostMapping(path = "/signature_Specimen/{idSigner}")
+    @Operation(summary = "Signer un fichier PDF",
+            description = "Permet de signer un document PDF en envoyant le fichier sous forme de tableau de bytes.")
+    public Response<byte[]> SignatureParSpecimen(
+            @RequestParam("codePin") String codePin,
+            @RequestBody String fileReceivefile,
+            @PathVariable("idSigner") int idSigner,
+            @RequestParam("workerId") int workerId
+    ) throws WriterException, IOException {
+        return iSignatureService.signatureParSpecimen(codePin, Decoders.BASE64.decode(fileReceivefile), idSigner, workerId);
     }
 
 }
